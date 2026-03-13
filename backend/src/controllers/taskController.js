@@ -1,75 +1,58 @@
-const user = require('../models/Task');
+const Task = require('../models/Task');
 
 
-const getTask = async(req,res ) => {
+const getTask = async (req, res) => {
     try {
-        const users = await user.find();
-
-        res.status(200).json(users);
-        
+        const tasks = await Task.find();
+        res.status(200).json(tasks);
     } catch (error) {
-        res.status(500).json({error: error.message});
-        
+        res.status(500).json({ error: error.message });
     }
 }
 
-const addTask = async (req,res) => {
-    const {title, description} = req.body;
+const addTask = async (req, res) => {
+    const { title, description } = req.body;
     try {
-
-        if(!title || !description){
-            return res.status(400).json({error: 'todos los campos son obligatorios'});
-        }else{
-            const newUser = await user.create({title, description});
-            res.status(200).json(newUser);
+        if (!title || !description) {
+            return res.status(400).json({ error: 'todos los campos son obligatorios' });
+        } else {
+            const newTask = await Task.create({ title, description });
+            res.status(200).json(newTask);
         }
-        
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: 'error inesperado'});
+        res.status(500).json({ error: 'error inesperado' });
     }
+};
 
-}
 
-
-const  modifyTask = async (req,res) => {
-
+const modifyTask = async (req, res) => {
     try {
-        const {id} = req.params;
-
-        const taskUpdate = await user.findByIdAndUpdate( id,
-            {$set: req.body},
-            {new: true, runValidators: true}
+        const { id } = req.params;
+        const taskUpdate = await Task.findByIdAndUpdate(
+            id,
+            { $set: req.body },
+            { new: true, runValidators: true }
         );
-        if(!taskUpdate){
-            return res.status(404).json({message: 'usuario no encontrado'})
+        if (!taskUpdate) {
+            return res.status(404).json({ message: 'tarea no encontrada' });
         }
         res.json(taskUpdate);
-        
     } catch (error) {
-        res.status(500).json({message: error.message});
-        
+        res.status(500).json({ message: error.message });
     }
-    
-} 
+};
 
-const deleteTask = async(req, res) => {
-    
+const deleteTask = async (req, res) => {
     try {
-        const {id} = req.params;
-
-        const deleteTask_ = await user.findByIdAndDelete(id);
-
-        if(!deleteTask_){
-            return res.status(404).json({message: 'usuario no encontrado!'});
+        const { id } = req.params;
+        const deletedTask = await Task.findByIdAndDelete(id);
+        if (!deletedTask) {
+            return res.status(404).json({ message: 'tarea no encontrada!' });
         }
-
-        res.json({message: 'usuario eliminado', user: deleteTask_});
-
-        
+        res.json({ message: 'tarea eliminada', task: deletedTask });
     } catch (error) {
-        res.status(500).json({message: error.message});
-        
+        res.status(500).json({ message: error.message });
     }
 
 
