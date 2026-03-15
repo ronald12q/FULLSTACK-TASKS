@@ -3,8 +3,10 @@ const Task = require('../models/Task');
 
 const getTask = async (req, res) => {
     try {
-        const tasks = await Task.find();
-        res.status(200).json(tasks);
+        const users = await user.findById({owner: req.user._id});
+
+        res.status(200).json(users);
+        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -13,11 +15,14 @@ const getTask = async (req, res) => {
 const addTask = async (req, res) => {
     const { title, description } = req.body;
     try {
-        if (!title || !description) {
-            return res.status(400).json({ error: 'todos los campos son obligatorios' });
-        } else {
-            const newTask = await Task.create({ title, description });
-            res.status(200).json(newTask);
+
+
+        if(!title || !description){
+            return res.status(400).json({error: 'todos los campos son obligatorios'});
+        }else{
+            const newUser = await user.create({title, description, owner: req.user._id});
+            res.status(200).json(newUser);
+ 
         }
     } catch (error) {
         console.error(error);

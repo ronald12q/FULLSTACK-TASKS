@@ -4,6 +4,7 @@ const app = express();
 const PORT  = 3000;
 const cors = require('cors');
 const taskRoute = require('./routes/taskRoutes.js');
+const useRoute = require('./routes/userRoutes.js');
 
 
 
@@ -20,7 +21,7 @@ app.get('/',(req, res) => {
 })
 
 app.use('/api/tasks', taskRoute);
-
+app.use('/api/user', useRoute);
 
 
 
