@@ -7,7 +7,7 @@ const register = async(req,res) => {
     try {
         const {username,email, password} = req.body;
 
-        const exists = await user.findOne({email});
+        const exists = await user.findOne([email]);
         if(exists){
             return res.status(400).json({message: 'user has already exist'});
         }
@@ -18,7 +18,7 @@ const register = async(req,res) => {
 
         const token = generateToken(User._id);
 
-        res.status(201).json({token});
+        res.status(201).json({token, user: {username: user.username, email: user.email}});
 
         
     } catch (error) {
@@ -32,7 +32,7 @@ const login = async (req, res) => {
 
     const user = await user.findOne([email]);
 
-    if(!exist){
+    if(!user){
         return res.status(400).json({message: 'credentials no match'});
     }
     
