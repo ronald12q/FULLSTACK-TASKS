@@ -3,9 +3,9 @@ const Task = require('../models/Task');
 
 const getTask = async (req, res) => {
     try {
-        const users = await user.findById({owner: req.user._id});
+        const tasks = await Task.find({ owner: req.user._id }).sort({ createdAt: -1 });
 
-        res.status(200).json(users);
+        res.status(200).json(tasks);
         
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -19,11 +19,10 @@ const addTask = async (req, res) => {
 
         if(!title || !description){
             return res.status(400).json({error: 'todos los campos son obligatorios'});
-        }else{
-            const newUser = await user.create({title, description, owner: req.user._id});
-            res.status(200).json(newUser);
- 
         }
+
+        const newTask = await Task.create({title, description, owner: req.user._id});
+        res.status(201).json(newTask);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'error inesperado' });
@@ -34,8 +33,8 @@ const addTask = async (req, res) => {
 const modifyTask = async (req, res) => {
     try {
         const { id } = req.params;
-        const taskUpdate = await Task.findByIdAndUpdate(
-            id,
+        const taskUpdate = await Task.findOneAndUpdate(
+            { _id: id, owner: req.user._id },
             { $set: req.body },
             { new: true, runValidators: true }
         );
@@ -51,7 +50,7 @@ const modifyTask = async (req, res) => {
 const deleteTask = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedTask = await Task.findByIdAndDelete(id);
+        const deletedTask = await Task.findOneAndDelete({ _id: id, owner: req.user._id });
         if (!deletedTask) {
             return res.status(404).json({ message: 'tarea no encontrada!' });
         }

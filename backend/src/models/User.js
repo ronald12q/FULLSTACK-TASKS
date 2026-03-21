@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 
-module.exports = mongoose.model('Users', userschema);
 
 const userSchema = new mongoose.Schema({
     username: {

@@ -13,13 +13,20 @@ export const useGetTasks = () => {
 
     useEffect(() => {
         const requestApi = async () => {
+            if (!token) {
+                setData([]);
+                setError(null);
+                setLoading(false);
+                return;
+            }
+
             try {
                 setLoading(true);
                 const response = await fetch("http://localhost:3000/api/tasks", {
                     method: "GET",
                     headers: {
                         'Content-Type' :'application/json',
-                        authotization: `Bearer ${token};`
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 if (!response.ok) throw new Error("request has fall");
@@ -39,7 +46,7 @@ export const useGetTasks = () => {
         };
 
         requestApi();
-    }, [value]);
+    }, [value, token]);
 
     return { data, error, loading };
 };

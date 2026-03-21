@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "../components/Modal";
 import { useGetTasks } from "../Hooks/UseGetTask";
 import { useCreateTask } from "../Hooks/UseCreateTask";
@@ -8,44 +8,41 @@ import { useDeleteTask } from "../Hooks/useDeleteTask";
 import { usePatchTask } from "../Hooks/UsePatchTasks";
 import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
+import { AuthUser } from "../ZustandUtilities/authStore";
 
-type mode = "login"| "register"
+type Mode = "login" | "register";
 
 export const Home = () => {
     const { updateValue } = useApiRefreshStore();
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const { data, error, loading } = useGetTasks();
-    
-    const [authOpen, setAuthOpen] = useState<boolean>(false);
-    const [authMode, setAuthMode] = useState<mode>('login');
+    const { user, logOut } = AuthUser();
 
-    const openLogin = () =>{
+    const [authOpen, setAuthOpen] = useState<boolean>(false);
+    const [authMode, setAuthMode] = useState<Mode>("login");
+
+    const openLogin = () => {
         setAuthOpen(true);
-        setAuthMode('login');
-    }
+        setAuthMode("login");
+    };
 
     const openRegister = () => {
         setAuthOpen(true);
-        setAuthMode('register');
-    }
+        setAuthMode("register");
+    };
 
-
-    <Modal isOpen={authOpen} onClose={() => setAuthOpen(false) }>
-        <div>
-            <button onClick={() => openLogin} >login</button>
-            <button onClick={() => openRegister} >register</button>
-        </div>
-    </Modal>
-
-    {authMode === 'login' ? (
-        <LoginForm onSuccess={() => setAuthOpen(false)} onSwitchRegister={()=> setAuthMode('register')}/>
-    ) :  <RegisterForm onSuccess={() => setAuthOpen(false)} onSwitchLogin={() => setAuthMode('login')} />  }
+    useEffect(() => {
+        if (user === null) {
+            setAuthOpen(true);
+        }
+    }, [user]);
 
     const {
         data: createdTask,
         error: createError,
         loading: createLoading,
         createTask,
+        resetCreateTaskState,
     } = useCreateTask();
 
     const {
@@ -77,6 +74,7 @@ export const Home = () => {
 
     const onCreateFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCreateForm({ ...createForm, [event.target.name]: event.target.value });
+        
     };
 
     const handleCreateSubmit = async (event: React.FormEvent) => {
@@ -84,6 +82,17 @@ export const Home = () => {
         await createTask(createForm);
         updateValue(1);
         setCreateForm({ title: "", description: "" });
+    };
+
+    const openCreateModal = () => {
+        resetCreateTaskState();
+        setCreateModalOpen(true);
+    };
+
+    const closeCreateModal = () => {
+        resetCreateTaskState();
+        setCreateForm({ title: "", description: "" });
+        setCreateModalOpen(false);
     };
 
     const openEditModal = (task: Task) => {
@@ -139,12 +148,37 @@ export const Home = () => {
                         </p>
                     </div>
 
-                    <button
-                        onClick={() => setCreateModalOpen(true)}
-                        className="rounded-2xl border border-zinc-700 bg-zinc-100 px-5 py-2.5 text-sm font-medium text-zinc-900 transition hover:-translate-y-0.5 hover:bg-white"
-                    >
-                        Add Task
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2">
+                        {user ? (
+                            <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-zinc-900/70 px-3 py-2">
+                                <div className="px-1">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-300">{user.name}</p>
+                                    <p className="text-xs text-zinc-400">{user.email}</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={logOut}
+                                    className="rounded-xl border border-rose-400/30 bg-rose-400/10 px-3 py-1.5 text-xs font-medium text-rose-200 transition hover:bg-rose-400/20"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={openLogin}
+                                className="rounded-2xl border border-zinc-700 bg-zinc-900/60 px-5 py-2.5 text-sm font-medium text-zinc-100 transition hover:-translate-y-0.5 hover:bg-zinc-800"
+                            >
+                                Login / Register
+                            </button>
+                        )}
+                        <button
+                            onClick={openCreateModal}
+                            className="rounded-2xl border border-zinc-700 bg-zinc-100 px-5 py-2.5 text-sm font-medium text-zinc-900 transition hover:-translate-y-0.5 hover:bg-white"
+                        >
+                            Add Task
+                        </button>
+                    </div>
                 </header>
 
                 <div className="mb-5 flex flex-wrap items-center gap-3 text-sm text-zinc-400">
@@ -186,7 +220,53 @@ export const Home = () => {
                 </div>
             </section>
 
-            <Modal isOpen={isCreateModalOpen} onClose={() => setCreateModalOpen(false)}>
+            <Modal isOpen={authOpen} onClose={() => setAuthOpen(false)}>
+                <div className="space-y-5">
+                    <div className="space-y-1">
+                        <h3 className="text-xl font-semibold text-white">Welcome back</h3>
+                        <p className="text-sm text-zinc-400">Inicia sesion o crea una cuenta para gestionar tareas.</p>
+                    </div>
+
+                    <div className="flex rounded-2xl border border-white/10 bg-zinc-900/70 p-1">
+                        <button
+                            type="button"
+                            onClick={openLogin}
+                            className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition ${
+                                authMode === "login"
+                                    ? "bg-zinc-100 text-zinc-900"
+                                    : "text-zinc-300 hover:text-white"
+                            }`}
+                        >
+                            Login
+                        </button>
+                        <button
+                            type="button"
+                            onClick={openRegister}
+                            className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition ${
+                                authMode === "register"
+                                    ? "bg-zinc-100 text-zinc-900"
+                                    : "text-zinc-300 hover:text-white"
+                            }`}
+                        >
+                            Register
+                        </button>
+                    </div>
+
+                    {authMode === "login" ? (
+                        <LoginForm
+                            onSuccess={() => setAuthOpen(false)}
+                            onSwitchRegister={() => setAuthMode("register")}
+                        />
+                    ) : (
+                        <RegisterForm
+                            onSuccess={() => setAuthOpen(false)}
+                            onSwitchLogin={() => setAuthMode("login")}
+                        />
+                    )}
+                </div>
+            </Modal>
+
+            <Modal isOpen={isCreateModalOpen} onClose={closeCreateModal}>
                 <h3 className="mb-1 text-xl font-semibold text-white">Nueva tarea</h3>
                 <p className="mb-6 text-sm text-zinc-400">Completa el formulario para crear una tarea.</p>
 

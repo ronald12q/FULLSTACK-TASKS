@@ -2,8 +2,8 @@ import { useState } from "react"
 import { AuthUser } from "../ZustandUtilities/authStore"
 
 interface LoginProps {
-    email: String,
-    password: String
+    email: string,
+    password: string
 }
 
 export const LoginUser = () => {
@@ -12,8 +12,9 @@ export const LoginUser = () => {
     const [errorLogin, SetErrorLogin] = useState<string | null>(null);
     const {getUser} = AuthUser();
 
-    const loginPost = async({email, password}:LoginProps) => {
+    const loginPost = async({email, password}:LoginProps): Promise<boolean> => {
         try {
+            SetErrorLogin(null);
 
             SetLoadingLogin(true);
             const res = await fetch('http://localhost:3000/api/user/login', {
@@ -26,12 +27,18 @@ export const LoginUser = () => {
 
             if(!res.ok) throw new Error('somtheing went wrong with the request');
             const dataLogin = await res.json();
-            getUser(dataLogin);
+            getUser({
+                name: dataLogin.user.username,
+                email: dataLogin.user.email,
+                token: dataLogin.token,
+            });
+            return true;
             
 
             
         } catch (error) {
-            SetErrorLogin('something was wrong during the request')
+            SetErrorLogin('something was wrong during the request');
+            return false;
             
         }finally{
             SetLoadingLogin(false);

@@ -11,6 +11,7 @@ interface UseCreateTaskReturn {
     error: string | null;
     loading: boolean;
     createTask: ({ title, description }: CreateTaskProps) => Promise<void>;
+    resetCreateTaskState: () => void;
 }
 
 export const useCreateTask = () => {
@@ -48,11 +49,18 @@ export const useCreateTask = () => {
 
     };
 
+    const resetCreateTaskState = () => {
+        setError(null);
+        setData(null);
+        setLoading(false);
+    };
+
     return {
         data: datap ?? null,
         error: errorp ?? null,
         loading: loadingp,
         createTask,
+        resetCreateTaskState,
     } as UseCreateTaskReturn;
 };
 
@@ -61,12 +69,13 @@ export const usePost = useCreateTask;
 
 // Backward-compatible property mapping.
 export const usePostAdapter = () => {
-    const { data, error, loading, createTask } = useCreateTask();
+    const { data, error, loading, createTask, resetCreateTaskState } = useCreateTask();
     return {
         datap: data,
         errorp: error,
         loadingp: loading,
         PostData: createTask,
+        resetState: resetCreateTaskState,
     };
 };
 

@@ -5,6 +5,8 @@ const PORT  = 3000;
 const cors = require('cors');
 const taskRoute = require('./routes/taskRoutes.js');
 const useRoute = require('./routes/userRoutes.js');
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 
 

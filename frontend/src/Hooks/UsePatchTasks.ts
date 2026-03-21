@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { TaskN, TaskPayload } from "../types/Usetypes";
 import { useApiRefreshStore } from "../ZustandUtilities/controlAPI";
+import { AuthUser } from "../ZustandUtilities/authStore";
 
 
 
@@ -22,6 +23,8 @@ export const PatchTaskHook = () => {
     const [errorpatch, setErrorPatch] = useState<string | null>(null);
     const [loadingpatch, setLoadingPatch] = useState<boolean>(false);
     const { updateValue } = useApiRefreshStore();
+    const { user } = AuthUser();
+    const token = user?.token ?? "";
 
     const patchTask = async ({ _id, newValue }: PatchTaskParams) => {
         try {
@@ -30,6 +33,7 @@ export const PatchTaskHook = () => {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(newValue),
             });

@@ -17,9 +17,10 @@ export const CreateUser = () => {
     const [error, setError] = useState<string | null>(null);
     const {getUser} = AuthUser();
 
-    const postUser = async ({username, email, password}:UserCreateProps) => {
+    const postUser = async ({username, email, password}:UserCreateProps): Promise<boolean> => {
         
         try {
+            setError(null);
             setLoading(true);
 
             const res = await fetch('http://localhost:3000/api/user/register', {
@@ -27,18 +28,24 @@ export const CreateUser = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({name, email, password})
+            body: JSON.stringify({username, email, password})
         });
 
         if(!res.ok) throw new Error('something get wrong meanwhile tried to connect');
 
         const response = await res.json();
-        getUser(response);
+        getUser({
+            name: response.user.username,
+            email: response.user.email,
+            token: response.token,
+        });
+        return true;
 
 
             
         } catch (error) {
             setError('something get wrong with the request');
+            return false;
             
         }finally{
             setLoading(false);
