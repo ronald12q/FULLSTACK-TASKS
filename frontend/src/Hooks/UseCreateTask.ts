@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AuthUser } from "../ZustandUtilities/authStore";
 
 interface CreateTaskProps {
     title: string;
@@ -16,6 +17,8 @@ export const useCreateTask = () => {
     const [datap, setData] = useState<CreateTaskProps | null>(null);
     const [errorp, setError] = useState<string | null>(null);
     const [loadingp, setLoading] = useState<boolean>(false);
+    const {user} = AuthUser();
+    const token = user?.token ?? '';
 
     const createTask = async ({ title, description }: CreateTaskProps) => {
         try {
@@ -26,6 +29,7 @@ export const useCreateTask = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({ title, description }),
             });

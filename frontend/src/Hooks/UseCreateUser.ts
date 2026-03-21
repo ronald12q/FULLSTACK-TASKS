@@ -5,7 +5,7 @@ import { AuthUser } from "../ZustandUtilities/authStore"
 
 
 interface UserCreateProps {
-    name: string,
+    username: string,
     email: string, 
     password: string
 }
@@ -17,12 +17,12 @@ export const CreateUser = () => {
     const [error, setError] = useState<string | null>(null);
     const {getUser} = AuthUser();
 
-    const postUser = async ({name, email, password}:UserCreateProps) => {
+    const postUser = async ({username, email, password}:UserCreateProps) => {
         
         try {
             setLoading(true);
 
-            const res = await fetch('http;//localhost:3000/api/user/register', {
+            const res = await fetch('http://localhost:3000/api/user/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ export const CreateUser = () => {
 
     }
 
-    return {loading, error, postUser};
+    return {loading, error, postUser};          
 
 
 }

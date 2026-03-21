@@ -6,12 +6,40 @@ import { type Task, type TaskPayload } from "../types/Usetypes";
 import { useApiRefreshStore } from "../ZustandUtilities/controlAPI";
 import { useDeleteTask } from "../Hooks/useDeleteTask";
 import { usePatchTask } from "../Hooks/UsePatchTasks";
+import { LoginForm } from "../components/LoginForm";
+import { RegisterForm } from "../components/RegisterForm";
 
+type mode = "login"| "register"
 
 export const Home = () => {
     const { updateValue } = useApiRefreshStore();
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const { data, error, loading } = useGetTasks();
+    
+    const [authOpen, setAuthOpen] = useState<boolean>(false);
+    const [authMode, setAuthMode] = useState<mode>('login');
+
+    const openLogin = () =>{
+        setAuthOpen(true);
+        setAuthMode('login');
+    }
+
+    const openRegister = () => {
+        setAuthOpen(true);
+        setAuthMode('register');
+    }
+
+
+    <Modal isOpen={authOpen} onClose={() => setAuthOpen(false) }>
+        <div>
+            <button onClick={() => openLogin} >login</button>
+            <button onClick={() => openRegister} >register</button>
+        </div>
+    </Modal>
+
+    {authMode === 'login' ? (
+        <LoginForm onSuccess={() => setAuthOpen(false)} onSwitchRegister={()=> setAuthMode('register')}/>
+    ) :  <RegisterForm onSuccess={() => setAuthOpen(false)} onSwitchLogin={() => setAuthMode('login')} />  }
 
     const {
         data: createdTask,

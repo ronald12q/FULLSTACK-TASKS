@@ -1,10 +1,19 @@
 import {create} from 'zustand';
-import type { userPost } from '../types/Usertpes';
 import { persist } from 'zustand/middleware';
 
+
+interface userInterface {
+    name: string,
+    email: string,
+    token: string
+}
+
+
 interface authStoreInterface  {
-     user : userPost | null ,
-    getUser : (data: userPost) => void }
+     user : userInterface | null ,
+    getUser : (data: userInterface) => void,
+    logOut: () => void }
+    
 
 export const AuthUser = create<authStoreInterface>()(
  
@@ -12,7 +21,8 @@ export const AuthUser = create<authStoreInterface>()(
         (set) => ({
 
             user: null,
-            getUser: (data: userPost) => set(({user: data}))
+            getUser: (data: userInterface) => set(({user: data})),
+            logOut: () => set(({user: null}))
 
 
         }),
