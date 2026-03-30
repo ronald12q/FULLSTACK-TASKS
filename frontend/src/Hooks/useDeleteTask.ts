@@ -12,7 +12,7 @@ export const useDeleteTask = () => {
     const deleteTaskById = async (id: string) => {
         try {
             setLoadingDel(true);
-            const res = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+            const res = await fetch(`/api/tasks/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

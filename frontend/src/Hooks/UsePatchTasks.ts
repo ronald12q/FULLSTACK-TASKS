@@ -29,7 +29,7 @@ export const PatchTaskHook = () => {
     const patchTask = async ({ _id, newValue }: PatchTaskParams) => {
         try {
             setLoadingPatch(true);
-            const res = await fetch(`http://localhost:3000/api/tasks/${_id}`, {
+            const res = await fetch(`/api/tasks/${_id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
