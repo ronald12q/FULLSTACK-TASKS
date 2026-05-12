@@ -24,8 +24,8 @@ dist-ssr
 *.sw?
 ../.env
 .env
-.env.!(example)
+.env.*
 ../backend/.env
-../backend/.env.!(example)
+../backend/.env.*
 ../backend/src/.env
-../backend/src/.env.!(example)
+../backend/src/.env.*

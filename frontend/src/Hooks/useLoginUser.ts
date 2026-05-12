@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { AuthUser } from "../ZustandUtilities/authStore"
-import { API_URL } from "../apiUrl"
 
 interface LoginProps {
     email: string,
@@ -18,7 +17,7 @@ export const LoginUser = () => {
             SetErrorLogin(null);
 
             SetLoadingLogin(true);
-            const res = await fetch(`${API_URL}/api/user/login`, {
+            const res = await fetch('/api/user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

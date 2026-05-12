@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useApiRefreshStore } from "../ZustandUtilities/controlAPI";
 import { AuthUser } from "../ZustandUtilities/authStore";
-import { API_URL } from "../apiUrl";
 
 export const useDeleteTask = () => {
     const [loadingdel, setLoadingDel] = useState<boolean>(false);
@@ -13,7 +12,7 @@ export const useDeleteTask = () => {
     const deleteTaskById = async (id: string) => {
         try {
             setLoadingDel(true);
-            const res = await fetch(`${API_URL}/api/tasks/${id}`, {
+            const res = await fetch(`/api/tasks/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

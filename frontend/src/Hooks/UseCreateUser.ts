@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { AuthUser } from "../ZustandUtilities/authStore"
-import { API_URL } from "../apiUrl"
 
 
 
@@ -24,7 +23,7 @@ export const CreateUser = () => {
             setError(null);
             setLoading(true);
 
-            const res = await fetch(`${API_URL}/api/user/register`, {
+            const res = await fetch('/api/user/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { AuthUser } from "../ZustandUtilities/authStore";
-import { API_URL } from "../apiUrl";
 
 interface CreateTaskProps {
     title: string;
@@ -27,7 +26,7 @@ export const useCreateTask = () => {
             setLoading(true);
             setError(null);
 
-            const res = await fetch(`${API_URL}/api/tasks`, {
+            const res = await fetch("/api/tasks", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

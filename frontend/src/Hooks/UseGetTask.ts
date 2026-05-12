@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import type { Task } from "../types/Usetypes";
 import { useApiRefreshStore } from "../ZustandUtilities/controlAPI";
 import { AuthUser } from "../ZustandUtilities/authStore";
-import { API_URL } from "../apiUrl";
 
 export const useGetTasks = () => {
     const [data, setData] = useState<Task[]>([]);
@@ -23,7 +22,7 @@ export const useGetTasks = () => {
 
             try {
                 setLoading(true);
-                const response = await fetch(`${API_URL}/api/tasks`, {
+                const response = await fetch("/api/tasks", {
                     method: "GET",
                     headers: {
                         'Content-Type' :'application/json',

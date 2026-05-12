@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { TaskN, TaskPayload } from "../types/Usetypes";
 import { useApiRefreshStore } from "../ZustandUtilities/controlAPI";
 import { AuthUser } from "../ZustandUtilities/authStore";
-import { API_URL } from "../apiUrl";
 
 
 
@@ -30,7 +29,7 @@ export const PatchTaskHook = () => {
     const patchTask = async ({ _id, newValue }: PatchTaskParams) => {
         try {
             setLoadingPatch(true);
-            const res = await fetch(`${API_URL}/api/tasks/${_id}`, {
+            const res = await fetch(`/api/tasks/${_id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
