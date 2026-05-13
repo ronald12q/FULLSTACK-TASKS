@@ -1,0 +1,7 @@
+.env
+.env.local
+.env.development
+.env.production
+*.log
+node_modules/
+dist/
