@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import { useState, type FormEvent, type ChangeEvent } from "react";
 import { CreateUser } from "../Hooks/UseCreateUser"
-
-
-
+import { useNotificationStore } from "../ZustandUtilities/notificationStore"
 
 interface RegisterProps {
     onSuccess: () => void,
@@ -19,39 +17,41 @@ interface RegisterData  {
 
 export const RegisterForm = ({ onSuccess, onSwitchLogin}:RegisterProps) => {
 
-    const {loading, error, postUser} = CreateUser();
+    const {loading, postUser} = CreateUser();
+    const { addNotification } = useNotificationStore();
     const [registerData, setRegisterData] = useState<RegisterData>({
         username: '',
         email:'',
         password: ''
     })
-    const [registerError, setRegisterError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
 
-    const onSubmit = async(e: React.FormEvent) => {
+    const onSubmit = async(e: FormEvent) => {
         e.preventDefault();
-        setRegisterError(null);
 
         if(!registerData.username || !registerData.email || !registerData.password){
-            setRegisterError('all the inputs needs to be filled')
+            addNotification({ title: 'Validation error', description: 'all the inputs needs to be filled', status: 'danger' });
             return
         }
 
         if(!registerData.email.includes('@') || registerData.password.length < 6){
-            setRegisterError('review the inputs something is not going well');
+            addNotification({ title: 'Validation error', description: 'review the inputs something is not going well', status: 'danger' });
             return;
-
         }
 
-        const isSuccess = await postUser(registerData);
-        if (!isSuccess) return;
+        const registerError = await postUser(registerData);
+        if (registerError) {
+            addNotification({ title: 'Registration failed', description: registerError, status: 'danger' });
+            return;
+        }
 
+        addNotification({ title: 'Registration successful', description: 'Your account has been created!', status: 'success' });
         setRegisterData({username: '', email: '', password: ''});
         onSuccess();
     }
 
-    const getRegisterData = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const getRegisterData = (event: ChangeEvent<HTMLInputElement>) => {
         setRegisterData({...registerData, [event.target.name]: event.target.value})
 
     }
@@ -116,8 +116,6 @@ export const RegisterForm = ({ onSuccess, onSwitchLogin}:RegisterProps) => {
                 {registerData.password.length > 0 && registerData.password.length < 6 && (
                     <p className="text-sm text-amber-300">the minimum length is 6</p>
                 )}
-                {registerError && <p className="text-sm text-rose-300">{registerError}</p>}
-                {error && <p className="text-sm text-rose-300">{error}</p>}
                 {loading && <p className="text-sm text-zinc-300">creating account...</p>}
             </form>
         </div>

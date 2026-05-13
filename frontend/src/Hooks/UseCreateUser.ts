@@ -18,7 +18,7 @@ export const CreateUser = () => {
     const [error, setError] = useState<string | null>(null);
     const {getUser} = AuthUser();
 
-    const postUser = async ({username, email, password}:UserCreateProps): Promise<boolean> => {
+    const postUser = async ({username, email, password}:UserCreateProps): Promise<string | null> => {
         
         try {
             setError(null);
@@ -32,22 +32,25 @@ export const CreateUser = () => {
             body: JSON.stringify({username, email, password})
         });
 
-        if(!res.ok) throw new Error('something get wrong meanwhile tried to connect');
-
         const response = await res.json();
+        if(!res.ok) {
+            const msg = response.message || 'something went wrong';
+            setError(msg);
+            return msg;
+        }
+
         getUser({
             name: response.user.username,
             email: response.user.email,
             token: response.token,
         });
-        return true;
+        return null;
 
-
-            
         } catch (error) {
-            setError('something get wrong with the request');
-            return false;
-            
+            const msg = 'something get wrong with the request';
+            setError(msg);
+            return msg;
+
         }finally{
             setLoading(false);
         }

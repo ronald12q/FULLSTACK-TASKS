@@ -13,7 +13,7 @@ export const LoginUser = () => {
     const [errorLogin, SetErrorLogin] = useState<string | null>(null);
     const {getUser} = AuthUser();
 
-    const loginPost = async({email, password}:LoginProps): Promise<boolean> => {
+    const loginPost = async({email, password}:LoginProps): Promise<string | null> => {
         try {
             SetErrorLogin(null);
 
@@ -26,21 +26,24 @@ export const LoginUser = () => {
                 body: JSON.stringify({email, password})
             })
 
-            if(!res.ok) throw new Error('somtheing went wrong with the request');
             const dataLogin = await res.json();
+            if(!res.ok) {
+                const msg = dataLogin.message || 'something went wrong';
+                SetErrorLogin(msg);
+                return msg;
+            }
             getUser({
                 name: dataLogin.user.username,
                 email: dataLogin.user.email,
                 token: dataLogin.token,
             });
-            return true;
-            
+            return null;
 
-            
         } catch (error) {
-            SetErrorLogin('something was wrong during the request');
-            return false;
-            
+            const msg = 'something was wrong during the request';
+            SetErrorLogin(msg);
+            return msg;
+
         }finally{
             SetLoadingLogin(false);
 

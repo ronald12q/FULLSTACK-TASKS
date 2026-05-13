@@ -3,6 +3,40 @@
 
 :root {
     color-scheme: dark;
+
+    --background: oklch(0.141 0.005 285.82);
+    --foreground: oklch(0.92 0.004 286.32);
+
+    --surface: oklch(0.205 0.006 285.89);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(0.26 0.007 285.89);
+    --surface-tertiary: oklch(0.22 0.006 285.89);
+
+    --overlay: oklch(0.18 0.005 285.89);
+    --overlay-foreground: var(--foreground);
+
+    --muted: oklch(0.65 0.015 286.32);
+    --default: oklch(0.27 0.006 286.03);
+    --default-foreground: var(--foreground);
+
+    --accent: oklch(0.68 0.17 253.83);
+    --accent-foreground: oklch(0.98 0 0);
+
+    --field-background: oklch(0.22 0.006 285.89);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --field-border: oklch(0.37 0.008 286.03);
+
+    --success: oklch(0.65 0.18 150.81);
+    --success-foreground: oklch(0.15 0.005 285.82);
+    --warning: oklch(0.75 0.16 72.33);
+    --warning-foreground: oklch(0.15 0.005 285.82);
+    --danger: oklch(0.65 0.23 25.74);
+    --danger-foreground: oklch(0.98 0 0);
+
+    --separator: oklch(0.32 0.008 286.03);
+    --focus: oklch(0.68 0.17 253.83);
+    --link: oklch(0.68 0.17 253.83);
 }
 
 html,

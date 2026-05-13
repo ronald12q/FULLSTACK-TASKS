@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from "react"
 import { LoginUser } from "../Hooks/useLoginUser"
+import { useNotificationStore } from "../ZustandUtilities/notificationStore"
 
 
 interface login {
@@ -16,34 +17,38 @@ interface loginProps {
 
 export const LoginForm = ({onSuccess, onSwitchRegister}: loginProps) => {
 
-    const {loadingLogin, errorLogin, loginPost} = LoginUser();
+    const {loadingLogin, loginPost} = LoginUser();
+    const { addNotification } = useNotificationStore();
 
     const [loginData, setLoginData] = useState<login> ({
         email: '',
         password: ''
     });
-    const [errorFrontend, setErrorFrontend] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState<boolean>(false);
+
 
 
 
     const loginSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        setErrorFrontend(null);
 
         if(!loginData.email || !loginData.password) {
-            setErrorFrontend('all places has to be fill');
+            addNotification({ title: 'Validation error', description: 'all places has to be fill', status: 'danger' });
             return;
         }
 
         if(!loginData.email.includes('@')){
-            setErrorFrontend('email format is not correct ');
+            addNotification({ title: 'Validation error', description: 'email format is not correct', status: 'danger' });
             return;
         }
 
-        const isSuccess = await loginPost(loginData);
-        if (!isSuccess) return;
+        const loginError = await loginPost(loginData);
+        if (loginError) {
+            addNotification({ title: 'Login failed', description: loginError, status: 'danger' });
+            return;
+        }
 
+        addNotification({ title: 'Login successful', description: 'Welcome back!', status: 'success' });
         setLoginData({email: '',  password: ''})
         onSuccess();
 
@@ -103,8 +108,6 @@ export const LoginForm = ({onSuccess, onSwitchRegister}: loginProps) => {
                     </button>
                 </div>
 
-                {errorFrontend && <p className="text-sm text-rose-300">{errorFrontend}</p>}
-                {errorLogin && <p className="text-sm text-rose-300">{errorLogin}</p>}
                 {loadingLogin && <p className="text-sm text-zinc-300">loading...</p>}
             </form>
         </div>
