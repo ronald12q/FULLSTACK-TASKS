@@ -4,6 +4,7 @@ import { AuthUser } from "../ZustandUtilities/authStore"
 
 
 
+
 interface UserCreateProps {
     username: string,
     email: string, 
@@ -23,7 +24,7 @@ export const CreateUser = () => {
             setError(null);
             setLoading(true);
 
-            const res = await fetch('/api/user/register', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/user/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

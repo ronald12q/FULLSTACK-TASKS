@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { AuthUser } from "../ZustandUtilities/authStore"
 
+
 interface LoginProps {
     email: string,
     password: string
@@ -17,7 +18,7 @@ export const LoginUser = () => {
             SetErrorLogin(null);
 
             SetLoadingLogin(true);
-            const res = await fetch('/api/user/login', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

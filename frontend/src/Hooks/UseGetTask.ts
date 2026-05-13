@@ -3,6 +3,7 @@ import type { Task } from "../types/Usetypes";
 import { useApiRefreshStore } from "../ZustandUtilities/controlAPI";
 import { AuthUser } from "../ZustandUtilities/authStore";
 
+
 export const useGetTasks = () => {
     const [data, setData] = useState<Task[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -22,7 +23,7 @@ export const useGetTasks = () => {
 
             try {
                 setLoading(true);
-                const response = await fetch("/api/tasks", {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/tasks`, {
                     method: "GET",
                     headers: {
                         'Content-Type' :'application/json',

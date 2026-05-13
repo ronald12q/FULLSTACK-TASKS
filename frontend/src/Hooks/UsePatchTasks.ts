@@ -6,6 +6,7 @@ import { AuthUser } from "../ZustandUtilities/authStore";
 
 
 
+
 interface PatchTaskParams {
     _id?: string;
     newValue: Partial<TaskPayload>;
@@ -29,7 +30,7 @@ export const PatchTaskHook = () => {
     const patchTask = async ({ _id, newValue }: PatchTaskParams) => {
         try {
             setLoadingPatch(true);
-            const res = await fetch(`/api/tasks/${_id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/tasks/${_id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

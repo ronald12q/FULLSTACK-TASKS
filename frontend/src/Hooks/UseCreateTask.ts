@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AuthUser } from "../ZustandUtilities/authStore";
 
+
 interface CreateTaskProps {
     title: string;
     description: string;
@@ -26,7 +27,7 @@ export const useCreateTask = () => {
             setLoading(true);
             setError(null);
 
-            const res = await fetch("/api/tasks", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/tasks`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

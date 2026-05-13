@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useApiRefreshStore } from "../ZustandUtilities/controlAPI";
 import { AuthUser } from "../ZustandUtilities/authStore";
 
+
 export const useDeleteTask = () => {
     const [loadingdel, setLoadingDel] = useState<boolean>(false);
     const [errorDelete, setErrorDelete] = useState<string | null>(null);
@@ -12,7 +13,7 @@ export const useDeleteTask = () => {
     const deleteTaskById = async (id: string) => {
         try {
             setLoadingDel(true);
-            const res = await fetch(`/api/tasks/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/tasks/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
