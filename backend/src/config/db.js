@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const newConnection = async () => {
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/Tasks');
+        await mongoose.connect(process.env.MONGO_ATLAS_URL);
         console.log('mongodb was succesfull connection')
     } catch (error ) {
         console.error("Error conectando a Mongosdb", error.message);
